@@ -1,0 +1,35 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: antd-pro-vue
+  namespace: default
+  labels:
+    app: antd-pro-vue
+spec:
+  clusterIP: None
+  selector:
+    app: antd-pro-vue
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: antd-pro-vue
+  namespace: default
+  labels:
+    app: antd-pro-vue
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: antd-pro-vue
+  template:
+    metadata:
+      labels:
+        app: antd-pro-vue
+    spec:
+      containers:
+      - name: antd-pro-vue
+        imagePullPolicy: Always
+        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
