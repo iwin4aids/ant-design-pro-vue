@@ -2,7 +2,7 @@ stages:
 - name: yarn install & build
   steps:
   - runScriptConfig:
-      image: 192.168.144.144/base/node:10.13.0-alpine-vuecli3
+      image: 192.168.144.144/base/node:10.13.0-alpine-vue
       shellScript: |-
         yarn install
         yarn build
