@@ -4,8 +4,7 @@ stages:
   - runScriptConfig:
       image: 192.168.144.144/base/node:10.13.0-alpine-vue
       shellScript: |-
-        yarn install
-        yarn build
+        yarn install && yarn build
 - name: docker build & publish
   steps:
   - publishImageConfig:
