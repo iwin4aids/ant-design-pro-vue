@@ -197,7 +197,7 @@
           }).then(res => {
             let result = res.result
             result.data.map(permission => {
-                permission.actionList = JSON.parse(permission.actionData)
+                permission.actionList = permission.actionData
                 return permission
               })
             return result
