@@ -1,4 +1,4 @@
-FROM 192.168.144.144/base/nginx:latest
+FROM 192.168.144.144/base/alpine-tengine:latest
 LABEL author="jiangkun" 
 # # 以下2步可选把nginx配置文件放到git仓库中,nginx官方镜像会在容器启动时启动NGINX并默认暴露80端口
 # #删除nginx 默认配置
