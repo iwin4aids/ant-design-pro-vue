@@ -4,47 +4,53 @@
     <a-form ref="formRegister" :autoFormCreate="(form)=>{this.form = form}" id="formRegister">
       <a-form-item
         fieldDecoratorId="email"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入邮箱地址' }], validateTrigger: 'blur'}">
+        :fieldDecoratorOptions="{rules: [{ required: true, type: 'email', message: '请输入邮箱地址' }], validateTrigger: ['change', 'blur']}">
 
         <a-input size="large" type="text" placeholder="邮箱"></a-input>
       </a-form-item>
 
-      <a-form-item
-        fieldDecoratorId="password"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '至少6位密码，区分大小写' }, { validator: this.handlePasswordLevel }], validateTrigger: ['change', 'blur']}">
-        <a-popover placement="right" trigger="click" :visible="clicked" @visibleChange="clicked = true">
-          <template slot="content">
-            <div :style="{ width: '240px' }">
-              <div :class="['user-register', passwordLevelClass]">强度：<span>{{ passwordLevelName }}</span></div>
-              <a-progress :percent="state.percent" :showInfo="false" strokeColor="#FF0000" />
-              <div style="margin-top: 10px;">
-                <span>请至少输入 6 个字符。请不要使用容易被猜到的密码。</span>
-              </div>
+      <a-popover placement="rightTop" trigger="click" :visible="state.passwordLevelChecked">
+        <template slot="content">
+          <div :style="{ width: '240px' }" >
+            <div :class="['user-register', passwordLevelClass]">强度：<span>{{ passwordLevelName }}</span></div>
+            <a-progress :percent="state.percent" :showInfo="false" :strokeColor=" passwordLevelColor " />
+            <div style="margin-top: 10px;">
+              <span>请至少输入 6 个字符。请不要使用容易被猜到的密码。</span>
             </div>
-          </template>
-          <a-input size="large" type="password" placeholder="至少6位密码，区分大小写"></a-input>
-        </a-popover>
-      </a-form-item>
+          </div>
+        </template>
+        <a-form-item
+          fieldDecoratorId="password"
+          :fieldDecoratorOptions="{rules: [{ required: true, message: '至少6位密码，区分大小写'}, { validator: this.handlePasswordLevel }
+        ], validateTrigger: ['change', 'blur']}">
+          <a-input size="large" type="password" @click="handlePasswordInputClick" autocomplete="false" placeholder="至少6位密码，区分大小写"></a-input>
+        </a-form-item>
+      </a-popover>
 
       <a-form-item
         fieldDecoratorId="password2"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '至少6位密码，区分大小写' }, { validator: this.handlePasswordCheck }], validateTrigger: 'blur'}">
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '至少6位密码，区分大小写' }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur']}">
 
-        <a-input size="large" type="password" placeholder="确认密码"></a-input>
+        <a-input size="large" type="password" autocomplete="false" placeholder="确认密码"></a-input>
       </a-form-item>
 
       <a-form-item
         fieldDecoratorId="mobile"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '手机号' }], validateTrigger: 'blur'}">
-
-        <a-input-group size="large" compact>
-          <a-select style="width: 20%" size="large" defaultValue="+86">
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入正确的手机号', pattern: /^1[3456789]\d{9}$/ }, { validator: this.handlePhoneCheck } ], validateTrigger: ['change', 'blur'] }">
+        <a-input size="large" placeholder="11 位手机号">
+          <a-select slot="addonBefore" size="large" defaultValue="+86">
             <a-select-option value="+86">+86</a-select-option>
             <a-select-option value="+87">+87</a-select-option>
           </a-select>
-          <a-input style="width: 80%" placeholder="11 位手机号"></a-input>
-        </a-input-group>
+        </a-input>
       </a-form-item>
+      <!--<a-input-group size="large" compact>
+            <a-select style="width: 20%" size="large" defaultValue="+86">
+              <a-select-option value="+86">+86</a-select-option>
+              <a-select-option value="+87">+87</a-select-option>
+            </a-select>
+            <a-input style="width: 80%" size="large" placeholder="11 位手机号"></a-input>
+          </a-input-group>-->
 
       <a-row :gutter="16">
         <a-col class="gutter-row" :span="16">
@@ -84,6 +90,7 @@
 </template>
 
 <script>
+  import { mixinDevice } from '@/utils/mixin.js'
   import { getSmsCaptcha } from '@/api/login'
 
   const levelNames = {
@@ -98,20 +105,28 @@
     2: 'warning',
     3: 'success'
   }
+  const levelColor = {
+    0: '#ff0000',
+    1: '#ff0000',
+    2: '#ff7e05',
+    3: '#52c41a',
+  }
   export default {
     name: "Register",
     components: {
     },
+    mixins: [mixinDevice],
     data() {
       return {
         form: null,
 
-        clicked: false,
         state: {
           time: 60,
           smsSendBtn: false,
           passwordLevel: 0,
-          percent: 0,
+          passwordLevelChecked: false,
+          percent: 10,
+          progressColor: '#FF0000'
         },
         registerBtn: false
       }
@@ -122,11 +137,15 @@
       },
       passwordLevelName () {
         return levelNames[this.state.passwordLevel]
+      },
+      passwordLevelColor () {
+        return levelColor[this.state.passwordLevel]
       }
     },
     methods: {
 
       handlePasswordLevel (rule, value, callback) {
+
         let level = 0
 
         // 判断这个字符串中有没有数字
@@ -143,23 +162,45 @@
         }
         this.state.passwordLevel = level
         this.state.percent = level * 30
-        console.log('passwordLevel', this.state.passwordLevel, 'level', level)
         if (level >= 2) {
           if (level >= 3) {
             this.state.percent = 100
           }
           callback()
         } else {
+          if (level === 0) {
+            this.state.percent = 10
+          }
           callback(new Error('密码强度不够'))
         }
       },
 
       handlePasswordCheck (rule, value, callback) {
         let password = this.form.getFieldValue('password')
+        console.log('value', value)
+        if (value === undefined) {
+          callback(new Error('请输入密码'))
+        }
         if (value && password && value.trim() !== password.trim()) {
           callback(new Error('两次密码不一致'))
         }
         callback()
+      },
+
+      handlePhoneCheck (rule, value, callback) {
+       console.log('handlePhoneCheck, rule:', rule)
+        console.log('handlePhoneCheck, value', value)
+        console.log('handlePhoneCheck, callback', callback)
+
+       callback()
+      },
+
+      handlePasswordInputClick () {
+        if (!this.isMobile()) {
+          this.state.passwordLevelChecked = true
+          return;
+        }
+        this.state.passwordLevelChecked = false
       },
 
       handleSubmit() {
@@ -237,6 +278,14 @@
 
     &.success {
       color: #52c41a;
+    }
+
+
+  }
+
+  .user-layout-register {
+    .ant-input-group-addon:first-child {
+      background-color: #fff;
     }
   }
 </style>

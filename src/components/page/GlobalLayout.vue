@@ -1,10 +1,10 @@
 <template>
-  <a-layout class="layout" :class="device">
+  <a-layout class="layout" :class="[device]">
 
     <template v-if="layoutMode === 'sidemenu'">
       <a-drawer
         v-if="device === 'mobile'"
-        :wrapClassName="'drawer-sider ' + theme"
+        :wrapClassName="'drawer-sider ' + navTheme"
         placement="left"
         @close="() => this.collapsed = false"
         :closable="false"
@@ -14,16 +14,16 @@
           mode="inline"
           :menus="menus"
           @menuSelect="menuSelect"
-          :theme="theme"
+          :theme="navTheme"
           :collapsed="false"
           :collapsible="true"></side-menu>
       </a-drawer>
 
       <side-menu
         v-else
+        mode="inline"
         :menus="menus"
-        :theme="theme"
-        :mode="menuMode"
+        :theme="navTheme"
         :collapsed="collapsed"
         :collapsible="true"></side-menu>
     </template>
@@ -31,7 +31,7 @@
     <template v-else>
       <a-drawer
         v-if="device === 'mobile'"
-        :wrapClassName="'drawer-sider ' + theme"
+        :wrapClassName="'drawer-sider ' + navTheme"
         placement="left"
         @close="() => this.collapsed = false"
         :closable="false"
@@ -41,18 +41,25 @@
           mode="inline"
           :menus="menus"
           @menuSelect="menuSelect"
-          :theme="theme"
+          :theme="navTheme"
           :collapsed="false"
           :collapsible="true"></side-menu>
       </a-drawer>
     </template>
 
-    <a-layout :class="[layoutMode]">
+    <a-layout :class="[layoutMode, `content-width-${contentWidth}`]" :style="{ paddingLeft: fixSiderbar && device === 'desktop' ? `${sidebarOpened ? 256 : 80}px` : '0' }">
       <!-- layout header -->
-      <global-header :mode="layoutMode" :theme="theme" :collapsed="collapsed" :device="device" @toggle="toggle"/>
+      <global-header 
+        :mode="layoutMode" 
+        :menus="menus" 
+        :theme="navTheme" 
+        :collapsed="collapsed" 
+        :device="device" 
+        @toggle="toggle"
+      />
 
       <!-- layout content -->
-      <a-layout-content :style="{ margin: '24px 24px 0', height: '100%' }">
+      <a-layout-content :style="{ margin: '24px 24px 0', height: '100%', paddingTop: fixedHeader ? '64px' : '0' }">
         <slot></slot>
       </a-layout-content>
 
@@ -71,34 +78,35 @@
   import GlobalHeader from '@/components/page/GlobalHeader'
   import GlobalFooter from '@/components/page/GlobalFooter'
   import SettingDrawer from '@/components/setting/SettingDrawer'
-  import { triggerResize } from '@/utils/util'
+  import { triggerWindowResizeEvent } from '@/utils/util'
   import { mapState, mapActions } from 'vuex'
+  import { mixin, mixinDevice } from '@/utils/mixin.js'
+
   export default {
-    name: "BasicLayout",
+    name: "GlobalLayout",
     components: {
       SideMenu,
       GlobalHeader,
       GlobalFooter,
       SettingDrawer
     },
+    mixins: [mixin, mixinDevice],
     data () {
       return {
-        // light, dark
-        menuTheme: 'light',
-        // inline, horizontal
-        menuMode: 'inline',
         collapsed: false,
         menus: []
       }
     },
     computed: {
       ...mapState({
+        // 主路由
         mainMenu: state => state.permission.addRouters,
-        layoutMode: state => state.app.layout,
-        sidebarOpened: state => state.app.sidebar.opened,
-        theme: state => state.app.theme,
-        device: state => state.app.device,
       })
+    },
+    watch: {
+      sidebarOpened(val) {
+        this.collapsed = !val
+      },
     },
     created() {
       this.menus = this.mainMenu.find((item) => item.path === '/').children
@@ -107,11 +115,11 @@
       ...mapActions(['setSidebar']),
       toggle() {
         this.collapsed = !this.collapsed
-        triggerResize()
-        this.setSidebar(this.collapsed)
+        this.setSidebar(!this.collapsed)
+        triggerWindowResizeEvent()
       },
       menuSelect() {
-        if (this.device !== 'desktop') {
+        if (!this.isDesktop()) {
           this.collapsed = false
         }
       }
@@ -142,14 +150,35 @@
         }
       }
 
+      /**
+       * ant-table-wrapper
+       * 覆盖的表格手机模式样式，如果想修改在手机上表格最低宽度，可以在这里改动
+       */
       .ant-table-wrapper {
-        .ant-table-body {
+        .ant-table-content {
           overflow-y: auto;
+        }
+        .ant-table-body {
+          min-width: 800px;
+        }
+      }
+      .sidemenu {
+        .ant-header-fixedHeader {
+
+          &.ant-header-side-opened, &.ant-header-side-closed  {
+            width: 100%
+          }
         }
       }
 
-
-
+      .topmenu {
+        /* 必须为 topmenu  才能启用流式布局 */
+        &.content-width-Fluid {
+          .header-index-wide {
+            margin-left: 0;
+          }
+        }
+      }
     }
 
     &.ant-layout-has-sider {
@@ -166,6 +195,58 @@
         background: rgba(0, 0, 0, 0.025);
       }
     }
+
+    .topmenu {
+      .ant-header-fixedHeader {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 9;
+        width: 100%;
+        transition: width .2s;
+
+        &.ant-header-side-opened {
+          width: 100%;
+        }
+
+        &.ant-header-side-closed {
+          width: 100%;
+        }
+      }
+      /* 必须为 topmenu  才能启用流式布局 */
+      &.content-width-Fluid {
+        .header-index-wide {
+          max-width: unset;
+          margin-left: 24px;
+        }
+
+        .page-header-index-wide {
+          max-width: unset;
+        }
+      }
+
+    }
+
+    .sidemenu {
+      .ant-header-fixedHeader {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 9;
+        width: 100%;
+        transition: width .2s;
+
+        &.ant-header-side-opened {
+          width: calc(100% - 256px)
+        }
+
+        &.ant-header-side-closed {
+          width: calc(100% - 80px)
+        }
+      }
+    }
+
+
 
     .header {
       height: 64px;
@@ -390,6 +471,11 @@
     box-shadow: 2px 0 6px rgba(0, 21, 41, .35);
     position: relative;
     z-index: 10;
+
+    &.ant-fixed-sidemenu {
+      position: fixed;
+      height: 100%;
+    }
 
     .logo {
       height: 64px;

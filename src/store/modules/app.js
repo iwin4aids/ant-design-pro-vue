@@ -1,5 +1,15 @@
 import Vue from 'vue'
-import { SIDEBAR_TYPE, DEFAULT_THEME, DEFAULT_LAYOUT_MODE, DEFAULT_COLOR, DEFAULT_COLOR_WEAK } from "@/store/mutation-types"
+import {
+  SIDEBAR_TYPE,
+  DEFAULT_THEME,
+  DEFAULT_LAYOUT_MODE,
+  DEFAULT_COLOR,
+  DEFAULT_COLOR_WEAK,
+  DEFAULT_FIXED_HEADER,
+  DEFAULT_FIXED_SIDEMENU,
+  DEFAULT_FIXED_HEADER_HIDDEN,
+  DEFAULT_CONTENT_WIDTH_TYPE
+} from "@/store/mutation-types"
 
 const app = {
   state: {
@@ -10,6 +20,10 @@ const app = {
     device: 'desktop',
     theme: '',
     layout: '',
+    contentWidth: '',
+    fixedHeader: false,
+    fixSiderbar: false,
+    autoHideHeader: false,
     color: null,
     weak: false
   },
@@ -35,6 +49,22 @@ const app = {
       Vue.ls.set(DEFAULT_LAYOUT_MODE, layout)
       state.layout = layout
     },
+    TOGGLE_FIXED_HEADER: (state, fixed) => {
+      Vue.ls.set(DEFAULT_FIXED_HEADER, fixed)
+      state.fixedHeader = fixed
+    },
+    TOGGLE_FIXED_SIDERBAR: (state, fixed) => {
+      Vue.ls.set(DEFAULT_FIXED_SIDEMENU, fixed)
+      state.fixSiderbar = fixed
+    },
+    TOGGLE_FIXED_HEADER_HIDDEN: (state, show) => {
+      Vue.ls.set(DEFAULT_FIXED_HEADER_HIDDEN, show)
+      state.autoHideHeader = show
+    },
+    TOGGLE_CONTENT_WIDTH: (state, type) => {
+      Vue.ls.set(DEFAULT_CONTENT_WIDTH_TYPE, type)
+      state.contentWidth = type
+    },
     TOGGLE_COLOR: (state, color) => {
       Vue.ls.set(DEFAULT_COLOR, color)
       state.color = color
@@ -59,6 +89,21 @@ const app = {
     },
     ToggleLayoutMode({ commit }, mode) {
       commit('TOGGLE_LAYOUT_MODE', mode)
+    },
+    ToggleFixedHeader({ commit }, fixedHeader) {
+      if (!fixedHeader) {
+        commit('TOGGLE_FIXED_HEADER_HIDDEN', false)
+      }
+      commit('TOGGLE_FIXED_HEADER', fixedHeader)
+    },
+    ToggleFixSiderbar({ commit }, fixSiderbar) {
+      commit( 'TOGGLE_FIXED_SIDERBAR', fixSiderbar)
+    },
+    ToggleFixedHeaderHidden({ commit }, show) {
+      commit('TOGGLE_FIXED_HEADER_HIDDEN', show)
+    },
+    ToggleContentWidth({ commit }, type) {
+      commit('TOGGLE_CONTENT_WIDTH', type)
     },
     ToggleColor({ commit }, color) {
       commit('TOGGLE_COLOR', color)
