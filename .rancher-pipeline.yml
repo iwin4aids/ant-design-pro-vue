@@ -2,7 +2,7 @@ stages:
 - name: yarn install & build
   steps:
   - runScriptConfig:
-      image: 192.168.144.144/base/node:10.14.0-slim
+      image: 192.168.144.144/base/node:10.14.0
       shellScript: |-
         yarn install && yarn build
 - name: docker build & publish
