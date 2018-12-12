@@ -23,6 +23,7 @@ module.exports = {
   configureWebpack: {
 
   },
+
   chainWebpack: (config) => {
     config.resolve.alias
       .set('@$', resolve('src'))
@@ -33,6 +34,7 @@ module.exports = {
       .set('@layout', resolve('src/layout'))
       .set('@static', resolve('src/static'))
   },
+
   css: {
     loaderOptions: {
       less: {
@@ -49,6 +51,7 @@ module.exports = {
       }
     }
   },
+
   devServer: {
     port: 8090,
     proxy: {
@@ -67,5 +70,7 @@ module.exports = {
         }
       }
     }
-  }
+  },
+
+  lintOnSave: undefined
 }
