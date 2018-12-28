@@ -1,5 +1,5 @@
 // import Vue from 'vue'
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 // const mixinsComputed = Vue.config.optionMergeStrategies.computed
 // const mixinsMethods = Vue.config.optionMergeStrategies.methods
@@ -17,6 +17,14 @@ const mixin = {
       autoHideHeader: state => state.app.autoHideHeader,
       sidebarOpened: state => state.app.sidebar.opened
     })
+  },
+  methods: {
+    isTopmenu () {
+      return this.layoutMode === 'topmenu'
+    },
+    isSideMenu () {
+      return !this.isTopmenu()
+    }
   }
 }
 

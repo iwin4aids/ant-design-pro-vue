@@ -55,7 +55,7 @@
     </a-card>
 
     <!-- fixed footer toolbar -->
-    <footer-tool-bar>
+    <footer-tool-bar :style="{ width: isSideMenu() && isDesktop() ? `calc(100% - ${sidebarOpened ? 256 : 80}px)` : '100%'}">
       <a-button type="primary" @click="validate" :loading="loading">提交</a-button>
     </footer-tool-bar>
   </div>
@@ -64,10 +64,12 @@
 <script>
   import RepositoryForm from './RepositoryForm'
   import TaskForm from './TaskForm'
-  import FooterToolBar from '@/components/tools/FooterToolBar'
+  import FooterToolBar from '@/components/FooterToolbar'
+  import { mixin, mixinDevice } from '@/utils/mixin'
 
   export default {
-    name: "AdvancedForm",
+    name: 'AdvancedForm',
+    mixins: [mixin, mixinDevice],
     components: {
       FooterToolBar,
       RepositoryForm,
@@ -151,12 +153,12 @@
         this.data = newData
       },
       saveRow (key) {
-        let target = this.data.filter(item => item.key === key)[0]
+        const target = this.data.filter(item => item.key === key)[0]
         target.editable = false
         target.isNew = false
       },
       toggle (key) {
-        let target = this.data.filter(item => item.key === key)[0]
+        const target = this.data.filter(item => item.key === key)[0]
         target.editable = !target.editable
       },
       getRowByKey (key, newData) {
@@ -164,7 +166,7 @@
         return (newData || data).filter(item => item.key === key)[0]
       },
       cancel (key) {
-        let target = this.data.filter(item => item.key === key)[0]
+        const target = this.data.filter(item => item.key === key)[0]
         target.editable = false
       },
       handleChange (value, key, column) {

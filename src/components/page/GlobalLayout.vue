@@ -67,9 +67,8 @@
       <a-layout-footer style="padding: 0px">
         <global-footer />
       </a-layout-footer>
+      <setting-drawer></setting-drawer>
     </a-layout>
-
-    <setting-drawer></setting-drawer>
   </a-layout>
 </template>
 
@@ -83,7 +82,7 @@
   import { mixin, mixinDevice } from '@/utils/mixin.js'
 
   export default {
-    name: "GlobalLayout",
+    name: 'GlobalLayout',
     components: {
       SideMenu,
       GlobalHeader,
@@ -137,7 +136,7 @@
     }
   }
 
-  .layout {
+  .layout.ant-layout {
     min-height: 100vh;
     overflow-x: hidden;
 

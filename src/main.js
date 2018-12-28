@@ -4,14 +4,16 @@ import Storage from 'vue-ls'
 import router from './router'
 import store from './store/'
 
-import { VueAxios } from "@/utils/request"
+import { VueAxios } from '@/utils/request'
 
 import Antd from 'ant-design-vue'
 import Viser from 'viser-vue'
-import 'ant-design-vue/dist/antd.less';  // or 'ant-design-vue/dist/antd.less'
+import 'ant-design-vue/dist/antd.less'  // or 'ant-design-vue/dist/antd.less'
 
 import '@/permission' // permission control
 import '@/utils/filter' // base filter
+import PermissionHelper from '@/utils/helper/permission'
+import { removeLoadingAnimate } from '@/utils/util'
 
 import {
   ACCESS_TOKEN,
@@ -24,7 +26,7 @@ import {
   DEFAULT_FIXED_HEADER_HIDDEN,
   DEFAULT_FIXED_SIDEMENU,
   DEFAULT_CONTENT_WIDTH_TYPE
-} from "@/store/mutation-types"
+} from '@/store/mutation-types'
 import config from '@/defaultSettings'
 
 Vue.config.productionTip = false
@@ -33,6 +35,7 @@ Vue.use(Storage, config.storageOptions)
 Vue.use(Antd)
 Vue.use(VueAxios, router)
 Vue.use(Viser)
+Vue.use(PermissionHelper)
 
 new Vue({
   router,
@@ -48,6 +51,8 @@ new Vue({
     store.commit('TOGGLE_WEAK', Vue.ls.get(DEFAULT_COLOR_WEAK, config.colorWeak))
     store.commit('TOGGLE_COLOR', Vue.ls.get(DEFAULT_COLOR, config.primaryColor))
     store.commit('SET_TOKEN', Vue.ls.get(ACCESS_TOKEN))
+
+    removeLoadingAnimate('preloadingWrapper')
   },
   render: h => h(App)
 }).$mount('#app')

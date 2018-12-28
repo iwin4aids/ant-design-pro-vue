@@ -1,11 +1,12 @@
 <template>
-  <div class="setting-drawer">
+  <div class="setting-drawer" ref="settingDrawer">
     <a-drawer
       width="300"
       placement="right"
       :closable="false"
       @close="onClose"
       :visible="visible"
+      :getContainer="() => $refs.settingDrawer"
       :style="{}"
     >
       <div class="setting-drawer-index-content">
@@ -211,7 +212,7 @@
         this.$store.dispatch('ToggleLayoutMode', mode)
         // 因为顶部菜单不能固定左侧菜单栏，所以强制关闭
         //
-        this.handleFixSiderbar(false);
+        this.handleFixSiderbar(false)
       },
       handleContentWidthChange (type) {
         this.$store.dispatch('ToggleContentWidth', type)
@@ -231,7 +232,7 @@
       handleFixSiderbar (fixed) {
         if (this.layoutMode === 'topmenu') {
           this.$store.dispatch('ToggleFixSiderbar', false)
-          return;
+          return
         }
         this.$store.dispatch('ToggleFixSiderbar', fixed)
       }
