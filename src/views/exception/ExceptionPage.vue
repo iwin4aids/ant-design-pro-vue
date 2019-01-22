@@ -17,7 +17,7 @@
   import types from './type'
 
   export default {
-    name: "Exception",
+    name: 'Exception',
     props: {
       type: {
         type: String,
@@ -37,7 +37,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .exception {
     min-height: 500px;
     height: 80%;

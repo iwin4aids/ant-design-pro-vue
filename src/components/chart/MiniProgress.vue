@@ -12,7 +12,7 @@
 
 <script>
   export default {
-    name: "MiniProgress",
+    name: 'MiniProgress',
     props: {
       target: {
         type: Number,
@@ -34,7 +34,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .chart-mini-progress {
     padding: 5px 0;
     position: relative;

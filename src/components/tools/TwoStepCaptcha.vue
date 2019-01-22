@@ -51,7 +51,7 @@ export default {
       stepLoading: false,
 
       form: null
-    };
+    }
   },
   methods: {
     handleStepOk() {
@@ -64,7 +64,7 @@ export default {
             vm.stepLoading = false
             vm.$emit('success', { values })
           }, 2000)
-          return;
+          return
         }
         this.stepLoading = false
         this.$emit('error', { err })
@@ -75,12 +75,12 @@ export default {
       this.$emit('cancel')
     },
     onForgeStepCode() {
-      
+
     }
   }
-};
+}
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .step-form-wrapper {
     margin: 0 auto;
     width: 80%;

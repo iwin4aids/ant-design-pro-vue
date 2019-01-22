@@ -8,7 +8,7 @@
 
 <script>
   export default {
-    name: "HeadInfo",
+    name: 'HeadInfo',
     props: {
       title: {
         type: String,
@@ -30,7 +30,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .head-info {
     position: relative;
     text-align: left;

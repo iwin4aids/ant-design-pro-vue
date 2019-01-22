@@ -140,7 +140,7 @@
   const DetailListItem = DetailList.Item
 
   export default {
-    name: "Advanced",
+    name: 'Advanced',
     components: {
       PageLayout,
       DetailList,
@@ -300,7 +300,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
   .detail-layout {
     margin-left: 44px;

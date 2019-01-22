@@ -40,7 +40,7 @@
   }]
 
   export default {
-    name: "MiniBar",
+    name: 'MiniBar',
     data () {
       return {
         data,
@@ -52,6 +52,6 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   @import "chart";
 </style>

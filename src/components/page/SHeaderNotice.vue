@@ -19,7 +19,7 @@
 
 <script>
   export default {
-    name: "HeaderNotice",
+    name: 'HeaderNotice',
     props: {
       tabs: {
         type: Array,
@@ -47,7 +47,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .header-notice{
     display: inline-block;
     transition: all 0.3s;

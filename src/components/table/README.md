@@ -9,6 +9,7 @@ Table 重封装组件说明
 >
 > 你无需在你是用表格的页面进行分页逻辑处理，仅需向 Table 组件传递绑定 `:data="Promise"` 对象即可
 
+该 `table` 由 [@AraragiTsukihiz](https://github.com/araragitsukihiz) 完成封装
 
 
 例子1
@@ -20,10 +21,11 @@ Table 重封装组件说明
 <template>
   <s-table
     ref="table"
-    :rowKey="(record) => record.data.id"
     size="default"
+    :rowKey="(record) => record.data.id"
     :columns="columns"
     :data="loadData"
+    :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
   >
   </s-table>
 </template>
@@ -74,7 +76,15 @@ Table 重封装组件说明
             return res.result
           })
         },
+        selectedRowKeys: [],
+        selectedRows: []
       }
+    },
+    methods: {
+      onSelectChange (selectedRowKeys, selectedRows) {
+         this.selectedRowKeys = selectedRowKeys
+         this.selectedRows = selectedRows
+       }
     }
   }
 </script>
@@ -173,7 +183,7 @@ Table 重封装组件说明
         // 调用 refresh() 重新加载列表数据
         // 这里 setTimeout 模拟发起请求的网络延迟..
         setTimeout(() => {
-          this.$refs.table.refresh()
+          this.$refs.table.refresh() // refresh() 不传参默认值 false 不刷新到分页第一页
         }, 1500)
 
       }
@@ -189,11 +199,33 @@ Table 重封装组件说明
 
 通过 `this.$refs.table` 调用
 
-`this.$refs.table.refresh()` 刷新列表 (用户新增/修改数据后，重载列表数据)
+`this.$refs.table.refresh(true)` 刷新列表 (用户新增/修改数据后，重载列表数据)
 
-> 注意：要调用 `refresh()` 需要给表格组件设定 `ref` 值
+> 注意：要调用 `refresh(bool)` 需要给表格组件设定 `ref` 值
+>
+> `refresh()` 方法可以传一个 `bool` 值，当有传值 或值为 `true` 时，则刷新时会强制刷新到第一页（常用户页面 搜索 按钮进行搜索时，结果从第一页开始分页）
 
 
+内置属性
+----
+> 除去 `a-table` 自带属性外，还而外提供了一些额外属性属性  
+
+  
+| 属性           | 说明                                            | 类型              | 默认值 |
+| -------------- | ----------------------------------------------- | ----------------- | ------ |
+| alert          | 设置是否显示表格信息栏                          | [object, boolean] | null   |
+| showPagination | 显示分页选择器，可传 'auto' \| boolean          | [string, boolean] | 'auto' |
+| data           | 加载数据方法 必须为 `Promise` 对象 **必须绑定** | Promise           | -      |
+
+
+`alert` 属性对象：
+
+```javascript
+alert: {
+  show: Boolean, 
+  clear: [Function, Boolean]
+}
+```
 
 注意事项
 ----
@@ -201,7 +233,7 @@ Table 重封装组件说明
 > 你可能需要为了与后端提供的接口返回结果一致而去修改以下代码：
 (需要注意的是，这里的修改是全局性的，意味着整个项目所有使用该 table 组件都需要遵守这个返回结果定义的字段。)
 
-修改 `@/components/table/index.js`  第 106 行起
+修改 `@/components/table/index.js`  第 132 行起
 
 
 
@@ -213,10 +245,19 @@ result.then(r => {
     showSizeChanger: this.showSizeChanger,
     pageSize: (pagination && pagination.pageSize) ||
       this.localPagination.pageSize
-  });
+  })
 
+  // 为防止删除数据后导致页面当前页面数据长度为 0 ,自动翻页到上一页
+  if (r.data.length == 0 && this.localPagination.current != 1) {
+    this.localPagination.current--
+    this.loadData()
+    return
+  }
+
+  // 这里用于判断接口是否有返回 r.totalCount 或 this.showPagination = false
+  // 当情况满足时，表示数据不满足分页大小，关闭 table 分页功能
   !r.totalCount && ['auto', false].includes(this.showPagination) && (this.localPagination = false)
-  this.localDataSource = r.data; // 返回结果中的数组数据
+  this.localDataSource = r.data // 返回结果中的数组数据
   this.localLoading = false
 });
 ```
@@ -289,4 +330,4 @@ result.then(r => {
 更新时间
 ----
 
-该文档最后更新于： 2018-10-31 PM 08:15
+该文档最后更新于： 2019-01-21 AM 08:37

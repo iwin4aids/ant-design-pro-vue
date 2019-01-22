@@ -42,7 +42,7 @@
   }
 
   export default {
-    name: "DetailList",
+    name: 'DetailList',
     Item: Item,
     components: {
       Col
@@ -77,7 +77,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="less">
 
   .detail-list {
 

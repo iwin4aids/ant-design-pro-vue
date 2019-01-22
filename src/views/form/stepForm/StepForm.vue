@@ -19,7 +19,7 @@
   import Step3 from './Step3'
 
   export default {
-    name: "StepForm",
+    name: 'StepForm',
     components: {
       Step1,
       Step2,
@@ -54,7 +54,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .steps {
     max-width: 750px;
     margin: 16px auto;

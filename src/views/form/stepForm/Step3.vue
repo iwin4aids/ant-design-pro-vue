@@ -33,7 +33,7 @@
   import Result from '../../result/Result'
 
   export default {
-    name: "Step3",
+    name: 'Step3',
     components: {
       Result
     },
@@ -52,7 +52,7 @@
     }
   }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .information {
     line-height: 22px;
 

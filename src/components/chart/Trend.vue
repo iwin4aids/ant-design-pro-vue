@@ -8,7 +8,7 @@
 
 <script>
   export default {
-    name: "Trend",
+    name: 'Trend',
     props: {
       term: {
         type: String,
@@ -43,14 +43,14 @@
       }
     },
     created () {
-      let type = this.type === null ? this.value >= this.target : this.type
-      this.trend = type ? 'up' : 'down';
+      const type = this.type === null ? this.value >= this.target : this.type
+      this.trend = type ? 'up' : 'down'
       this.rate = (this.percentage === null ? Math.abs(this.value - this.target) * 100 / this.target : this.percentage).toFixed(this.fixed)
     }
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .chart-trend {
     display: inline-block;
     font-size: 14px;

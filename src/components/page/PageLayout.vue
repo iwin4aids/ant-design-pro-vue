@@ -40,7 +40,7 @@
   import PageHeader from './PageHeader'
 
   export default {
-    name: "LayoutContent",
+    name: 'LayoutContent',
     components: {
       PageHeader
     },
@@ -84,7 +84,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .content {
     margin: 24px 24px 0;
 

@@ -21,11 +21,11 @@
     <div>
       <a-row :gutter="24">
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card 
-            class="project-list" 
-            :loading="loading" 
-            style="margin-bottom: 24px;" 
-            :bordered="false" 
+          <a-card
+            class="project-list"
+            :loading="loading"
+            style="margin-bottom: 24px;"
+            :bordered="false"
             title="进行中的项目"
             :body-style="{ padding: 0 }">
             <a slot="extra">全部项目</a>
@@ -67,12 +67,12 @@
             </a-list>
           </a-card>
         </a-col>
-        <a-col 
-          style="padding: 0 12px" 
-          :xl="8" 
-          :lg="24" 
-          :md="24" 
-          :sm="24" 
+        <a-col
+          style="padding: 0 12px"
+          :xl="8"
+          :lg="24"
+          :md="24"
+          :sm="24"
           :xs="24">
           <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
             <div class="item-group">
@@ -110,19 +110,19 @@
 </template>
 
 <script>
-  import { timeFix } from "@/utils/util"
-  import {mapGetters} from "vuex"
+  import { timeFix } from '@/utils/util'
+  import {mapGetters} from 'vuex'
 
   import PageLayout from '@/components/page/PageLayout'
   import HeadInfo from '@/components/tools/HeadInfo'
   import Radar from '@/components/chart/Radar'
 
-  import { getRoleList, getServiceList } from "@/api/manage"
+  import { getRoleList, getServiceList } from '@/api/manage'
 
   const DataSet = require('@antv/data-set')
 
   export default {
-    name: "Workplace",
+    name: 'Workplace',
     components: {
       PageLayout,
       HeadInfo,
@@ -203,7 +203,7 @@
       this.initRadar()
     },
     methods: {
-      ...mapGetters(["nickname", "welcome"]),
+      ...mapGetters(['nickname', 'welcome']),
       getProjects() {
         this.$http.get('/list/search/projects')
           .then(res => {
@@ -245,7 +245,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .project-list {
 
     .card-title {

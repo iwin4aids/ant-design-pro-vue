@@ -43,13 +43,13 @@
   import { mapActions, mapGetters } from 'vuex'
 
   export default {
-    name: "UserMenu",
+    name: 'UserMenu',
     components: {
       HeaderNotice
     },
     methods: {
-      ...mapActions(["Logout"]),
-      ...mapGetters(["nickname", "avatar"]),
+      ...mapActions(['Logout']),
+      ...mapGetters(['nickname', 'avatar']),
       handleLogout() {
         const that = this
 
@@ -68,12 +68,8 @@
           },
           onCancel() {
           },
-        });
+        })
       },
     }
   }
 </script>
-
-<style scoped>
-
-</style>

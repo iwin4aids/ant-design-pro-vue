@@ -8,7 +8,7 @@
 
 <script>
   export default {
-    name: "SettingItem",
+    name: 'SettingItem',
     props: {
       title: {
         type: String,
@@ -22,7 +22,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
   .setting-drawer-index-item {
     margin-bottom: 24px;

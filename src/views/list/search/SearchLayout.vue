@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: "SearchLayout",
+    name: 'SearchLayout',
     data () {
       return {
         tabs: {
@@ -63,7 +63,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .search-head{
     background-color: #fff;
     margin: -25px -24px -24px;

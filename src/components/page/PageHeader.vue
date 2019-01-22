@@ -44,9 +44,9 @@
   import Breadcrumb from '@/components/tools/Breadcrumb'
 
   export default {
-    name: "PageHeader",
+    name: 'PageHeader',
     components: {
-      "s-breadcrumb": Breadcrumb
+      's-breadcrumb': Breadcrumb
     },
     props: {
       title: {
@@ -100,7 +100,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
   .page-header {
     background: #fff;

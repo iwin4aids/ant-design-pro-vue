@@ -69,7 +69,7 @@
   }
 
   export default {
-    name: "Article",
+    name: 'Article',
     components: {},
     data() {
       return {
@@ -79,7 +79,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
   .app-list {
 
