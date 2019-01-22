@@ -1,22 +1,22 @@
 <template>
   <a-layout class="layout" :class="[device]">
 
-    <template v-if="layoutMode === 'sidemenu'">
+    <template v-if="isSideMenu()">
       <a-drawer
-        v-if="device === 'mobile'"
+        v-if="isMobile()"
         :wrapClassName="'drawer-sider ' + navTheme"
-        placement="left"
-        @close="() => this.collapsed = false"
         :closable="false"
         :visible="collapsed"
+        placement="left"
+        @close="() => this.collapsed = false"
       >
         <side-menu
-          mode="inline"
           :menus="menus"
-          @menuSelect="menuSelect"
           :theme="navTheme"
           :collapsed="false"
-          :collapsible="true"></side-menu>
+          :collapsible="true"
+          mode="inline"
+          @menuSelect="menuSelect"></side-menu>
       </a-drawer>
 
       <side-menu
@@ -30,7 +30,7 @@
     <!-- 下次优化这些代码 -->
     <template v-else>
       <a-drawer
-        v-if="device === 'mobile'"
+        v-if="isMobile()"
         :wrapClassName="'drawer-sider ' + navTheme"
         placement="left"
         @close="() => this.collapsed = false"
@@ -38,23 +38,23 @@
         :visible="collapsed"
       >
         <side-menu
-          mode="inline"
           :menus="menus"
-          @menuSelect="menuSelect"
           :theme="navTheme"
           :collapsed="false"
-          :collapsible="true"></side-menu>
+          :collapsible="true"
+          mode="inline"
+          @menuSelect="menuSelect"></side-menu>
       </a-drawer>
     </template>
 
-    <a-layout :class="[layoutMode, `content-width-${contentWidth}`]" :style="{ paddingLeft: fixSiderbar && isDesktop() ? `${sidebarOpened ? 256 : 80}px` : '0' }">
+    <a-layout :class="[layoutMode, `content-width-${contentWidth}`]" :style="{ paddingLeft: contentPaddingLeft, minHeight: '100vh' }">
       <!-- layout header -->
-      <global-header 
-        :mode="layoutMode" 
-        :menus="menus" 
-        :theme="navTheme" 
-        :collapsed="collapsed" 
-        :device="device" 
+      <global-header
+        :mode="layoutMode"
+        :menus="menus"
+        :theme="navTheme"
+        :collapsed="collapsed"
+        :device="device"
         @toggle="toggle"
       />
 
@@ -64,7 +64,7 @@
       </a-layout-content>
 
       <!-- layout footer -->
-      <a-layout-footer style="padding: 0px">
+      <a-layout-footer style="padding: 0">
         <global-footer />
       </a-layout-footer>
       <setting-drawer></setting-drawer>
@@ -100,15 +100,26 @@
       ...mapState({
         // 主路由
         mainMenu: state => state.permission.addRouters,
-      })
+      }),
+      contentPaddingLeft () {
+        if(!this.fixSidebar || this.isMobile()){
+          return '0'
+        }
+        if(this.sidebarOpened){
+          return '256px'
+        }
+        return '80px'
+      }
     },
     watch: {
       sidebarOpened(val) {
+        console.log('sidebarOpened', val)
         this.collapsed = !val
       },
     },
     created() {
       this.menus = this.mainMenu.find((item) => item.path === '/').children
+      this.collapsed = !this.sidebarOpened
     },
     methods: {
       ...mapActions(['setSidebar']),
@@ -116,6 +127,16 @@
         this.collapsed = !this.collapsed
         this.setSidebar(!this.collapsed)
         triggerWindowResizeEvent()
+      },
+      paddingCalc () {
+        let left = ''
+        if (this.sidebarOpened) {
+          left = this.isDesktop() ? '256px' : '80px'
+        } else {
+          left = this.isMobile() && '0' || (this.fixSidebar && '80px' || '0')
+        }
+        console.log('left', left)
+        return left
       },
       menuSelect() {
         if (!this.isDesktop()) {
@@ -126,7 +147,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="less">
   body {
     // 打开滚动条固定显示
     overflow-y: scroll;
@@ -137,10 +158,9 @@
   }
 
   .layout.ant-layout {
-    min-height: 100vh;
     overflow-x: hidden;
 
-    &.mobile {
+    &.mobile,&.tablet {
 
       .ant-layout-content {
 
@@ -161,20 +181,22 @@
           min-width: 800px;
         }
       }
-      .sidemenu {
-        .ant-header-fixedHeader {
-
-          &.ant-header-side-opened, &.ant-header-side-closed  {
-            width: 100%
-          }
-        }
-      }
-
       .topmenu {
         /* 必须为 topmenu  才能启用流式布局 */
         &.content-width-Fluid {
           .header-index-wide {
             margin-left: 0;
+          }
+        }
+      }
+    }
+
+    &.mobile {
+      .sidemenu {
+        .ant-header-fixedHeader {
+
+          &.ant-header-side-opened, &.ant-header-side-closed  {
+            width: 100%
           }
         }
       }
@@ -301,7 +323,7 @@
       }
     }
 
-    &.mobile {
+    &.mobile,&.tablet {
       .top-nav-header-index {
 
         .header-index-wide {
@@ -471,6 +493,10 @@
     position: relative;
     z-index: 10;
 
+    .ant-layout-sider-children {
+      overflow-y: auto;
+    }
+
     &.ant-fixed-sidemenu {
       position: fixed;
       height: 100%;
@@ -525,6 +551,11 @@
   }
 
   // 外置的样式控制
+  .user-dropdown-menu {
+    span {
+      user-select: none;
+    }
+  }
   .user-dropdown-menu-wrapper.ant-dropdown-menu {
     padding: 4px 0;
 

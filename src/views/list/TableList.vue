@@ -49,7 +49,7 @@
           </template>
           <a-col :md="!advanced && 8 || 24" :sm="24">
             <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
-              <a-button type="primary" @click="$refs.table.refresh()">查询</a-button>
+              <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
               <a @click="toggleAdvanced" style="margin-left: 8px">
                 {{ advanced ? '收起' : '展开' }}
@@ -80,8 +80,8 @@
       size="default"
       :columns="columns"
       :data="loadData"
-      :showAlertInfo="true"
-      @onSelect="onChange"
+      :alert="{ show: true, clear: () => { this.selectedRowKeys = [] } }"
+      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
     >
       <span slot="action" slot-scope="text, record">
         <template v-if="$auth('table.update')">
@@ -271,11 +271,10 @@
       handleOk () {
 
       },
-      onChange (row) {
-        this.selectedRowKeys = row.selectedRowKeys
-        this.selectedRows = row.selectedRows
 
-        console.log(this.$refs.table)
+      onSelectChange (selectedRowKeys, selectedRows) {
+        this.selectedRowKeys = selectedRowKeys
+        this.selectedRows = selectedRows
       },
       toggleAdvanced () {
         this.advanced = !this.advanced

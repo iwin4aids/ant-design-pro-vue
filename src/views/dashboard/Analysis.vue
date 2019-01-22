@@ -145,7 +145,7 @@
 </template>
 
 <script>
-  import ChartCard from '@/components/ChartCard'
+  import ChartCard from '@/components/chart/ChartCard'
   import ACol from 'ant-design-vue/es/grid/Col'
   import ATooltip from 'ant-design-vue/es/tooltip/Tooltip'
   import MiniArea from '@/components/chart/MiniArea'
@@ -190,7 +190,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .extra-wrapper {
     line-height: 55px;
     padding-right: 24px;
